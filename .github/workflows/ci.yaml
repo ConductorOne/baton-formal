@@ -98,8 +98,10 @@ jobs:
         # Change the grant arguments to the correct IDs for your test data
         run: ./baton-formal --grant-entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --grant-principal="${{ env.CONNECTOR_PRINCIPAL }}" --grant-principal-type="${{ env.CONNECTOR_PRINCIPAL_TYPE }}"
 
-      - name: Check grant was re-granted
+      - name: resync
+        run: ./baton-formal
 
+      - name: Check grant was re-granted
         run:
           baton grants --entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --output-format=json | jq  --exit-status ".grants[].principal.id.resource | index(\"user_01hw3ydazpetds0xzgayvpc2vw\")"
 
