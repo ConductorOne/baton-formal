@@ -2,6 +2,7 @@ package connector
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	corev1 "buf.build/gen/go/formal/core/protocolbuffers/go/core/v1"
@@ -12,6 +13,8 @@ import (
 	ent "github.com/conductorone/baton-sdk/pkg/types/entitlement"
 	"github.com/conductorone/baton-sdk/pkg/types/grant"
 	"github.com/formalco/go-sdk/sdk/v2"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
+	"go.uber.org/zap"
 )
 
 type groupBuilder struct {
@@ -118,6 +121,7 @@ func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, pToken
 }
 
 func (o *groupBuilder) Grant(ctx context.Context, principal *v2.Resource, entitlement *v2.Entitlement) (annotations.Annotations, error) {
+	l := ctxzap.Extract(ctx)
 	if principal.Id.ResourceType != userResourceType.Id {
 		return nil, fmt.Errorf("only users can have group link granted")
 	}
@@ -129,6 +133,18 @@ func (o *groupBuilder) Grant(ctx context.Context, principal *v2.Resource, entitl
 
 	response, err := o.client.GroupServiceClient.CreateUserGroupLink(ctx, request)
 	if err != nil {
+		var connectErr *connect.Error
+		if errors.As(err, &connectErr) {
+			if connectErr.Code() == connect.CodeAlreadyExists {
+				l.Debug(
+					"group link already exists, returning successfully",
+					zap.String("principal", principal.Id.Resource),
+					zap.String("entitlement", entitlement.Resource.Id.Resource),
+				)
+				return nil, nil
+			}
+		}
+
 		return nil, fmt.Errorf("GroupServiceClient.CreateUserGroupLink error: %w", err)
 	}
 
@@ -140,6 +156,7 @@ func (o *groupBuilder) Grant(ctx context.Context, principal *v2.Resource, entitl
 }
 
 func (o *groupBuilder) Revoke(ctx context.Context, grant *v2.Grant) (annotations.Annotations, error) {
+	l := ctxzap.Extract(ctx)
 	if grant.Principal.Id.ResourceType != userResourceType.Id {
 		return nil, fmt.Errorf("only users can have group link revoked")
 	}
@@ -189,7 +206,13 @@ func (o *groupBuilder) Revoke(ctx context.Context, grant *v2.Grant) (annotations
 	if err != nil {
 		return nil, fmt.Errorf("rateLimitAnnotations error: %w", err)
 	}
-	return rateLimit, fmt.Errorf("user is not linked to group")
+
+	l.Debug(
+		"group link not found, returning successfully",
+		zap.String("principal", grant.Principal.Id.Resource),
+		zap.String("entitlement", grant.Entitlement.Resource.Id.Resource),
+	)
+	return rateLimit, nil
 }
 
 func newGroupBuilder(client *sdk.FormalSDK) *groupBuilder {
