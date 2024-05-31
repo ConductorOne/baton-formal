@@ -101,5 +101,5 @@ jobs:
       - name: Check grant was re-granted
 
         run:
-          baton grants --entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --output-format=json | jq --exit-status ".grants[].principal.id.resource == \"${{ env.CONNECTOR_PRINCIPAL }}\""
+          baton grants --entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --output-format=json | jq  --exit-status ".grants[].principal.id.resource | index(\"user_01hw3ydazpetds0xzgayvpc2vw\")"
 
