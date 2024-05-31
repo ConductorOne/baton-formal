@@ -54,9 +54,10 @@ jobs:
       # BATON_ACCESS_TOKEN: 'secret_token'
       # The following parameters are passed to grant/revoke commands
       # Change these to the correct IDs for your test data
-      CONNECTOR_GRANT: 'grant:entitlement:group:1234:member:user:9876'
-      CONNECTOR_ENTITLEMENT: 'entitlement:group:1234:member'
-      CONNECTOR_PRINCIPAL: 'user:9876'
+      BATON_FORMAL_API_KEY: ${{ secrets.BATON_FORMAL_API_KEY }}
+      CONNECTOR_GRANT: 'group:group_01hwv4ketae9vsa36rafvkn8mr:member:user:user_01hw3ydazpetds0xzgayvpc2vw'
+      CONNECTOR_ENTITLEMENT: 'group:group_01hwv4ketae9vsa36rafvkn8mr:member'
+      CONNECTOR_PRINCIPAL: 'user_01hw3ydazpetds0xzgayvpc2vw'
       CONNECTOR_PRINCIPAL_TYPE: 'user'
     steps:
       - name: Install Go
