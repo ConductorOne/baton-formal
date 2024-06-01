@@ -54,9 +54,10 @@ jobs:
       # BATON_ACCESS_TOKEN: 'secret_token'
       # The following parameters are passed to grant/revoke commands
       # Change these to the correct IDs for your test data
-      CONNECTOR_GRANT: 'grant:entitlement:group:1234:member:user:9876'
-      CONNECTOR_ENTITLEMENT: 'entitlement:group:1234:member'
-      CONNECTOR_PRINCIPAL: 'user:9876'
+      BATON_FORMAL_API_KEY: ${{ secrets.BATON_FORMAL_API_KEY }}
+      CONNECTOR_GRANT: 'group:group_01hwv4ketae9vsa36rafvkn8mr:member:user:user_01hw3ydazpetds0xzgayvpc2vw'
+      CONNECTOR_ENTITLEMENT: 'group:group_01hwv4ketae9vsa36rafvkn8mr:member'
+      CONNECTOR_PRINCIPAL: 'user_01hw3ydazpetds0xzgayvpc2vw'
       CONNECTOR_PRINCIPAL_TYPE: 'user'
     steps:
       - name: Install Go
@@ -97,8 +98,11 @@ jobs:
         # Change the grant arguments to the correct IDs for your test data
         run: ./baton-formal --grant-entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --grant-principal="${{ env.CONNECTOR_PRINCIPAL }}" --grant-principal-type="${{ env.CONNECTOR_PRINCIPAL_TYPE }}"
 
-      - name: Check grant was re-granted
+      - name: resync
+        run: ./baton-formal
 
+      - name: Check grant was re-granted
         run:
-          baton grants --entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --output-format=json | jq --exit-status ".grants[].principal.id.resource == \"${{ env.CONNECTOR_PRINCIPAL }}\""
+          baton grants --entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --output-format=json | jq  ".grants[].principal.id.resource == \"user_01hw3ydazpetds0xzgayvpc2vw\""
+
 
