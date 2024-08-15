@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	formalAPIKey        = field.StringField("formal-api-key", field.WithRequired(true), field.WithDescription("Your Formal API KEY."))
-	configurationFields = []field.SchemaField{formalAPIKey}
+	formalAPIKeyField   = field.StringField("formal-api-key", field.WithRequired(true), field.WithDescription("Your Formal API KEY."))
+	configurationFields = []field.SchemaField{formalAPIKeyField}
 )
 
 func main() {
@@ -47,7 +47,7 @@ func main() {
 
 func getConnector(ctx context.Context, cfg *viper.Viper) (types.ConnectorServer, error) {
 	l := ctxzap.Extract(ctx)
-	cb, err := connector.New(ctx, cfg.GetString(formalAPIKey.GetName()))
+	cb, err := connector.New(ctx, cfg.GetString(formalAPIKeyField.GetName()))
 	if err != nil {
 		l.Error("error creating connector", zap.Error(err))
 		return nil, err
