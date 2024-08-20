@@ -8,6 +8,8 @@ on:
 jobs:
   calculate-capabilities:
     runs-on: ubuntu-latest
+    env:
+      BATON_FORMAL_API_KEY: ${{ secrets.BATON_FORMAL_API_KEY }}
 
     steps:
       - name: Checkout code
