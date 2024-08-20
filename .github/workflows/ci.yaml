@@ -39,21 +39,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    # Define any services needed for the test suite (or delete this section)
-    # services:
-    #   postgres:
-    #     image: postgres:16
-    #     ports:
-    #       - "5432:5432"
-    #     env:
-    #       POSTGRES_PASSWORD: secretpassword
     env:
       BATON_LOG_LEVEL: debug
-      # Add any environment variables needed to run baton-formal
-      # BATON_BASE_URL: 'http://localhost:8080'
-      # BATON_ACCESS_TOKEN: 'secret_token'
-      # The following parameters are passed to grant/revoke commands
-      # Change these to the correct IDs for your test data
       BATON_FORMAL_API_KEY: ${{ secrets.BATON_FORMAL_API_KEY }}
       CONNECTOR_GRANT: 'group:group_01hwv4ketae9vsa36rafvkn8mr:member:user:user_01hw3ydazpetds0xzgayvpc2vw'
       CONNECTOR_ENTITLEMENT: 'group:group_01hwv4ketae9vsa36rafvkn8mr:member'
@@ -66,14 +53,6 @@ jobs:
           go-version: 1.22.x
       - name: Checkout code
         uses: actions/checkout@v4
-      # Install any dependencies here (or delete this)
-      # - name: Install postgres client
-      #   run: sudo apt install postgresql-client
-      # Run any fixture setup here (or delete this)
-      # - name: Import sql into postgres
-      #   run: psql -h localhost --user postgres -f environment.sql
-      #   env:
-      #     PGPASSWORD: secretpassword
       - name: Build baton-formal
         run: go build ./cmd/baton-formal
       - name: Run baton-formal
@@ -83,10 +62,8 @@ jobs:
         run: ./scripts/get-baton.sh && mv baton /usr/local/bin
 
       - name: Check for grant before revoking
-
         run:
           baton grants --entitlement="${{ env.CONNECTOR_ENTITLEMENT }}" --output-format=json | jq --exit-status ".grants[].principal.id.resource == \"${{ env.CONNECTOR_PRINCIPAL }}\""
-
 
       - name: Revoke grants
         run: ./baton-formal --revoke-grant="${{ env.CONNECTOR_GRANT }}"
