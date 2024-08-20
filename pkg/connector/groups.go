@@ -17,6 +17,8 @@ import (
 	"go.uber.org/zap"
 )
 
+const PageSize = 100
+
 type groupBuilder struct {
 	client *sdk.FormalSDK
 }
@@ -27,7 +29,7 @@ func (o *groupBuilder) ResourceType(ctx context.Context) *v2.ResourceType {
 
 func (o *groupBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, pToken *pagination.Token) ([]*v2.Resource, string, annotations.Annotations, error) {
 	request := connect.NewRequest(&corev1.ListGroupsRequest{
-		Limit:  100,
+		Limit:  PageSize,
 		Cursor: pToken.Token,
 	})
 
@@ -72,7 +74,7 @@ func (o *groupBuilder) Entitlements(_ context.Context, resource *v2.Resource, _ 
 func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, pToken *pagination.Token) ([]*v2.Grant, string, annotations.Annotations, error) {
 	request := connect.NewRequest(&corev1.ListUserGroupLinksRequest{
 		GroupId: resource.Id.Resource,
-		Limit:   100,
+		Limit:   PageSize,
 		Cursor:  pToken.Token,
 	})
 
@@ -166,7 +168,7 @@ func (o *groupBuilder) Revoke(ctx context.Context, grant *v2.Grant) (annotations
 	for {
 		request := connect.NewRequest(&corev1.ListUserGroupLinksRequest{
 			GroupId: grant.Entitlement.Resource.Id.Resource,
-			Limit:   100,
+			Limit:   PageSize,
 			Cursor:  npt,
 		})
 
