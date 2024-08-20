@@ -7,10 +7,9 @@ toolchain go1.22.2
 require (
 	buf.build/gen/go/formal/core/protocolbuffers/go v1.33.0-20240417020633-67c08acefeb5.1
 	connectrpc.com/connect v1.16.1
-	github.com/conductorone/baton-sdk v0.2.18
+	github.com/conductorone/baton-sdk v0.2.21
 	github.com/formalco/go-sdk/sdk/v2 v2.0.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0
 	google.golang.org/protobuf v1.34.1
@@ -73,6 +72,7 @@ require (
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
+	github.com/spf13/cobra v1.8.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.14 // indirect
