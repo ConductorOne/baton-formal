@@ -7,7 +7,7 @@ toolchain go1.22.2
 require (
 	buf.build/gen/go/formal/core/protocolbuffers/go v1.33.0-20240417020633-67c08acefeb5.1
 	connectrpc.com/connect v1.16.1
-	github.com/conductorone/baton-sdk v0.2.21
+	github.com/conductorone/baton-sdk v0.2.31
 	github.com/formalco/go-sdk/sdk/v2 v2.0.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/spf13/viper v1.18.2
