@@ -9,9 +9,9 @@ import (
 	"connectrpc.com/connect"
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
 	"github.com/conductorone/baton-sdk/pkg/annotations"
-	"github.com/conductorone/baton-sdk/pkg/pagination"
 	ent "github.com/conductorone/baton-sdk/pkg/types/entitlement"
 	"github.com/conductorone/baton-sdk/pkg/types/grant"
+	rs "github.com/conductorone/baton-sdk/pkg/types/resource"
 	"github.com/formalco/go-sdk/sdk/v2"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"go.uber.org/zap"
@@ -27,7 +27,8 @@ func (o *groupBuilder) ResourceType(ctx context.Context) *v2.ResourceType {
 	return groupResourceType
 }
 
-func (o *groupBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, pToken *pagination.Token) ([]*v2.Resource, string, annotations.Annotations, error) {
+func (o *groupBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, attrs rs.SyncOpAttrs) ([]*v2.Resource, *rs.SyncOpResults, error) {
+	pToken := attrs.PageToken
 	request := connect.NewRequest(&corev1.ListGroupsRequest{
 		Limit:  PageSize,
 		Cursor: pToken.Token,
@@ -35,14 +36,14 @@ func (o *groupBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 
 	response, err := o.client.GroupServiceClient.ListGroups(ctx, request)
 	if err != nil {
-		return nil, "", nil, fmt.Errorf("GroupServiceClient.ListGroups error: %w", err)
+		return nil, nil, fmt.Errorf("GroupServiceClient.ListGroups error: %w", err)
 	}
 
 	var groups []*v2.Resource
 	for _, group := range response.Msg.Groups {
 		resourceGroup, err := formalGroupToResourceGroup(parentResourceID, group)
 		if err != nil {
-			return nil, "", nil, fmt.Errorf("formalGroupToResourceGroup error: %w", err)
+			return nil, nil, fmt.Errorf("formalGroupToResourceGroup error: %w", err)
 		}
 		groups = append(groups, resourceGroup)
 	}
@@ -54,12 +55,12 @@ func (o *groupBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 
 	rateLimit, err := rateLimitAnnotations(response.Header())
 	if err != nil {
-		return nil, "", nil, fmt.Errorf("rateLimitAnnotations error: %w", err)
+		return nil, nil, fmt.Errorf("rateLimitAnnotations error: %w", err)
 	}
-	return groups, token, rateLimit, nil
+	return groups, &rs.SyncOpResults{NextPageToken: token, Annotations: rateLimit}, nil
 }
 
-func (o *groupBuilder) Entitlements(_ context.Context, resource *v2.Resource, _ *pagination.Token) ([]*v2.Entitlement, string, annotations.Annotations, error) {
+func (o *groupBuilder) Entitlements(_ context.Context, resource *v2.Resource, _ rs.SyncOpAttrs) ([]*v2.Entitlement, *rs.SyncOpResults, error) {
 	options := []ent.EntitlementOption{
 		ent.WithGrantableTo(userResourceType),
 		ent.WithDisplayName(fmt.Sprintf("%s Group %s", resource.DisplayName, "member")),
@@ -68,10 +69,11 @@ func (o *groupBuilder) Entitlements(_ context.Context, resource *v2.Resource, _ 
 
 	return []*v2.Entitlement{
 		ent.NewAssignmentEntitlement(resource, "member", options...),
-	}, "", nil, nil
+	}, nil, nil
 }
 
-func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, pToken *pagination.Token) ([]*v2.Grant, string, annotations.Annotations, error) {
+func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, attrs rs.SyncOpAttrs) ([]*v2.Grant, *rs.SyncOpResults, error) {
+	pToken := attrs.PageToken
 	request := connect.NewRequest(&corev1.ListUserGroupLinksRequest{
 		GroupId: resource.Id.Resource,
 		Limit:   PageSize,
@@ -80,7 +82,7 @@ func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, pToken
 
 	response, err := o.client.GroupServiceClient.ListUserGroupLinks(ctx, request)
 	if err != nil {
-		return nil, "", nil, fmt.Errorf("GroupServiceClient.ListUserGroupLinks error: %w", err)
+		return nil, nil, fmt.Errorf("GroupServiceClient.ListUserGroupLinks error: %w", err)
 	}
 
 	var rv []*v2.Grant
@@ -91,12 +93,12 @@ func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, pToken
 
 		user, err := o.client.UserServiceClient.GetUser(ctx, getUserRequest)
 		if err != nil {
-			return nil, "", nil, fmt.Errorf("UserServiceClient.GetUser error: %w", err)
+			return nil, nil, fmt.Errorf("UserServiceClient.GetUser error: %w", err)
 		}
 
 		userResource, err := formalUserToResourceUser(nil, user.Msg.User)
 		if err != nil {
-			return nil, "", nil, fmt.Errorf("formalUserToResourceUser error: %w", err)
+			return nil, nil, fmt.Errorf("formalUserToResourceUser error: %w", err)
 		}
 		if userResource == nil {
 			continue
@@ -117,9 +119,9 @@ func (o *groupBuilder) Grants(ctx context.Context, resource *v2.Resource, pToken
 
 	rateLimit, err := rateLimitAnnotations(response.Header())
 	if err != nil {
-		return nil, "", nil, fmt.Errorf("rateLimitAnnotations error: %w", err)
+		return nil, nil, fmt.Errorf("rateLimitAnnotations error: %w", err)
 	}
-	return rv, token, rateLimit, nil
+	return rv, &rs.SyncOpResults{NextPageToken: token, Annotations: rateLimit}, nil
 }
 
 func (o *groupBuilder) Grant(ctx context.Context, principal *v2.Resource, entitlement *v2.Entitlement) (annotations.Annotations, error) {

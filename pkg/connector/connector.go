@@ -6,8 +6,10 @@ import (
 
 	"github.com/formalco/go-sdk/sdk/v2"
 
+	cfg "github.com/conductorone/baton-formal/pkg/config"
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
 	"github.com/conductorone/baton-sdk/pkg/annotations"
+	"github.com/conductorone/baton-sdk/pkg/cli"
 	"github.com/conductorone/baton-sdk/pkg/connectorbuilder"
 )
 
@@ -16,8 +18,8 @@ type Connector struct {
 }
 
 // ResourceSyncers returns a ResourceSyncer for each resource type that should be synced from the upstream service.
-func (d *Connector) ResourceSyncers(ctx context.Context) []connectorbuilder.ResourceSyncer {
-	return []connectorbuilder.ResourceSyncer{
+func (d *Connector) ResourceSyncers(ctx context.Context) []connectorbuilder.ResourceSyncerV2 {
+	return []connectorbuilder.ResourceSyncerV2{
 		newUserBuilder(d.client),
 		newGroupBuilder(d.client),
 	}
@@ -44,8 +46,8 @@ func (d *Connector) Validate(ctx context.Context) (annotations.Annotations, erro
 }
 
 // New returns a new instance of the connector.
-func New(ctx context.Context, formalAPIKey string) (*Connector, error) {
+func New(ctx context.Context, cc *cfg.Formal, opts *cli.ConnectorOpts) (connectorbuilder.ConnectorBuilderV2, []connectorbuilder.Opt, error) {
 	return &Connector{
-		client: sdk.New(formalAPIKey),
-	}, nil
+		client: sdk.New(cc.FormalApiKey),
+	}, nil, nil
 }
