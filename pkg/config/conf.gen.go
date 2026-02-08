@@ -5,6 +5,7 @@ import "reflect"
 
 type Formal struct {
 	FormalApiKey string `mapstructure:"formal-api-key"`
+	BaseUrl      string `mapstructure:"base-url"`
 }
 
 func (c *Formal) findFieldByTag(tagValue string) (any, bool) {

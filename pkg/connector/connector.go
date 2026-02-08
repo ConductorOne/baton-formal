@@ -47,7 +47,13 @@ func (d *Connector) Validate(ctx context.Context) (annotations.Annotations, erro
 
 // New returns a new instance of the connector.
 func New(ctx context.Context, cc *cfg.Formal, opts *cli.ConnectorOpts) (connectorbuilder.ConnectorBuilderV2, []connectorbuilder.Opt, error) {
+	var client *sdk.FormalSDK
+	if cc.BaseUrl != "" {
+		client = sdk.NewWithUrl(cc.FormalApiKey, cc.BaseUrl)
+	} else {
+		client = sdk.New(cc.FormalApiKey)
+	}
 	return &Connector{
-		client: sdk.New(cc.FormalApiKey),
+		client: client,
 	}, nil, nil
 }
