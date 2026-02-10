@@ -1,6 +1,6 @@
 ![Baton Logo](./docs/images/baton-logo.png)
 
-# `baton-formal` [![Go Reference](https://pkg.go.dev/badge/github.com/conductorone/baton-formal.svg)](https://pkg.go.dev/github.com/conductorone/baton-formal) ![main ci](https://github.com/conductorone/baton-formal/actions/workflows/main.yaml/badge.svg)
+# `baton-formal` [![Go Reference](https://pkg.go.dev/badge/github.com/conductorone/baton-formal.svg)](https://pkg.go.dev/github.com/conductorone/baton-formal) ![ci](https://github.com/conductorone/baton-formal/actions/workflows/ci.yaml/badge.svg)
 
 `baton-formal` is a connector for [Formal](https://joinformal.com) built using the [Baton SDK](https://github.com/conductorone/baton-sdk). It communicates with the Formal API to sync data about users and groups.
 
