@@ -22,7 +22,7 @@ func (o *userBuilder) ResourceType(ctx context.Context) *v2.ResourceType {
 func (o *userBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, attrs rs.SyncOpAttrs) ([]*v2.Resource, *rs.SyncOpResults, error) {
 	pToken := attrs.PageToken
 	request := connect.NewRequest(&corev1.ListUsersRequest{
-		Limit:  100,
+		Limit:  PageSize,
 		Cursor: pToken.Token,
 	})
 

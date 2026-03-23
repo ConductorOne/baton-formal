@@ -51,17 +51,17 @@ func formalGroupToResourceGroup(parentResourceID *v2.ResourceId, group *corev1.G
 func rateLimitAnnotations(header http.Header) (annotations.Annotations, error) {
 	limit, err := strconv.ParseInt(header.Get("X-Ratelimit-Limit"), 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("X-Ratelimit-Limit header value is invalid: %s", header.Get("X-Ratelimit-Limit"))
+		return nil, fmt.Errorf("X-Ratelimit-Limit header value is invalid: %w", err)
 	}
 
 	remaining, err := strconv.ParseInt(header.Get("X-Ratelimit-Remaining"), 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("X-Ratelimit-Remaining header value is invalid: %s", header.Get("X-Ratelimit-Remaining"))
+		return nil, fmt.Errorf("X-Ratelimit-Remaining header value is invalid: %w", err)
 	}
 
 	unix, err := strconv.ParseInt(header.Get("X-Ratelimit-Reset"), 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("X-Ratelimit-Reset header value is invalid: %s", header.Get("X-Ratelimit-Reset"))
+		return nil, fmt.Errorf("X-Ratelimit-Reset header value is invalid: %w", err)
 	}
 
 	status := v2.RateLimitDescription_STATUS_OK
