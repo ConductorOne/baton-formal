@@ -13,8 +13,16 @@ var (
 		field.WithRequired(true),
 	)
 
+	BaseUrlField = field.StringField(
+		"base-url",
+		field.WithDescription("Override the Formal API URL (for testing)"),
+		field.WithHidden(true),
+		field.WithExportTarget(field.ExportTargetCLIOnly),
+	)
+
 	ConfigurationFields = []field.SchemaField{
 		FormalAPIKeyField,
+		BaseUrlField,
 	}
 
 	FieldRelationships = []field.SchemaFieldRelationship{}
