@@ -5,7 +5,7 @@ go 1.25.2
 require (
 	buf.build/gen/go/formal/core/protocolbuffers/go v1.33.0-20240417020633-67c08acefeb5.1
 	connectrpc.com/connect v1.16.1
-	github.com/conductorone/baton-sdk v0.8.30
+	github.com/conductorone/baton-sdk v0.9.0
 	github.com/ennyjfrick/ruleguard-logfatal v0.0.2
 	github.com/formalco/go-sdk/sdk/v2 v2.0.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
@@ -46,7 +46,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/conductorone/dpop v0.2.3 // indirect
 	github.com/conductorone/dpop/integrations/dpop_grpc v0.2.3 // indirect
-	github.com/conductorone/dpop/integrations/dpop_oauth2 v0.2.3 // indirect
+	github.com/conductorone/dpop/integrations/dpop_oauth2 v0.2.5 // indirect
 	github.com/deckarep/golang-set/v2 v2.7.0 // indirect
 	github.com/doug-martin/goqu/v9 v9.19.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
