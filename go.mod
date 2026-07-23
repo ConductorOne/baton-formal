@@ -5,7 +5,7 @@ go 1.25.2
 require (
 	buf.build/gen/go/formal/core/protocolbuffers/go v1.33.0-20240417020633-67c08acefeb5.1
 	connectrpc.com/connect v1.16.1
-	github.com/conductorone/baton-sdk v0.19.1
+	github.com/conductorone/baton-sdk v0.20.1
 	github.com/ennyjfrick/ruleguard-logfatal v0.0.2
 	github.com/formalco/go-sdk/sdk/v2 v2.0.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
@@ -17,8 +17,9 @@ require (
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.33.0-20240401165935-b983156c5e99.1 // indirect
 	buf.build/gen/go/formal/core/connectrpc/go v1.16.1-20240417020633-67c08acefeb5.1 // indirect
-	filippo.io/age v1.2.1 // indirect
+	filippo.io/age v1.3.1 // indirect
 	filippo.io/edwards25519 v1.1.1 // indirect
+	filippo.io/hpke v0.4.0 // indirect
 	github.com/DataDog/zstd v1.5.7 // indirect
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
 	github.com/RaduBerinde/axisds v0.1.0 // indirect
