@@ -5,7 +5,7 @@ go 1.25.2
 require (
 	buf.build/gen/go/formal/core/protocolbuffers/go v1.33.0-20240417020633-67c08acefeb5.1
 	connectrpc.com/connect v1.16.1
-	github.com/conductorone/baton-sdk v0.20.5
+	github.com/conductorone/baton-sdk v0.20.6
 	github.com/ennyjfrick/ruleguard-logfatal v0.0.2
 	github.com/formalco/go-sdk/sdk/v2 v2.0.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
