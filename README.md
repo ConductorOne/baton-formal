@@ -23,7 +23,7 @@ baton resources
 ## docker
 
 ```
-docker run --rm -v $(pwd):/out -e BATON_FORMAL_API_KEY=<api-key> ghcr.io/conductorone/baton-formal:latest -f "/out/sync.c1z"
+docker run --rm -v $(pwd):/out -e BATON_FORMAL_API_KEY=<api-key> public.ecr.aws/conductorone/baton-formal:latest -f "/out/sync.c1z"
 docker run --rm -v $(pwd):/out ghcr.io/conductorone/baton:latest -f "/out/sync.c1z" resources
 ```
 
