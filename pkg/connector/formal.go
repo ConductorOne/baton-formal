@@ -25,10 +25,10 @@ func formalUserToResourceUser(parentResourceID *v2.ResourceId, user *corev1.User
 
 	return sdkResource.NewUserResource(name, userResourceType, userID, []sdkResource.UserTraitOption{
 		sdkResource.WithEmail(email, true),
-		sdkResource.WithCreatedAt(createdAt),
 		sdkResource.WithAccountType(userType),
-		sdkResource.WithStatus(v2.UserTrait_Status_STATUS_ENABLED),
-	}, sdkResource.WithParentResourceID(parentResourceID))
+	},
+		sdkResource.WithResourceCreatedAt(createdAt),
+		sdkResource.WithResourceStatus(v2.Status_RESOURCE_STATUS_ENABLED, ""), sdkResource.WithParentResourceID(parentResourceID))
 }
 
 func formalGroupToResourceGroup(parentResourceID *v2.ResourceId, group *corev1.Group) (*v2.Resource, error) {
@@ -36,14 +36,13 @@ func formalGroupToResourceGroup(parentResourceID *v2.ResourceId, group *corev1.G
 		group.GetName(),
 		groupResourceType,
 		group.GetId(),
-		[]sdkResource.GroupTraitOption{
-			sdkResource.WithGroupProfile(map[string]interface{}{
-				"created_at":     group.GetCreatedAt().AsTime().Unix(),
-				"updated_at":     group.GetUpdatedAt().AsTime().Unix(),
-				"dsync_group_id": group.GetDsyncGroupId(),
-				"description":    group.GetDescription(),
-			}),
-		},
+		[]sdkResource.GroupTraitOption{},
+		sdkResource.WithResourceProfile(map[string]interface{}{
+			"created_at":     group.GetCreatedAt().AsTime().Unix(),
+			"updated_at":     group.GetUpdatedAt().AsTime().Unix(),
+			"dsync_group_id": group.GetDsyncGroupId(),
+			"description":    group.GetDescription(),
+		}),
 		sdkResource.WithParentResourceID(parentResourceID),
 	)
 }
